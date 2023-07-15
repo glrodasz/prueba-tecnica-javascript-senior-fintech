@@ -1,3 +1,57 @@
+// Una transaction es duplicada, si tiene el mismo sourceAccount, targetAccount, category, amount y el tiempo es menor a 1 minuto de diferencia.
+
+// Hacer una funcionalidad que agrupe las transaccciones duplicadas
+// en una lista.
+
+// Ejemplo:
+
+const exampleOutput = [
+    [
+        {
+            id: 1,
+            sourceAccount: "A",
+            targetAccount: "B",
+            amount: 100,
+            category: "eating_out",
+            time: "2018-03-02T10:33:00.000Z",
+        },
+        {
+            id: 2,
+            sourceAccount: "A",
+            targetAccount: "B",
+            amount: 100,
+            category: "eating_out",
+            time: "2018-03-02T10:33:50.000Z",
+        },
+        {
+            id: 3,
+            sourceAccount: "A",
+            targetAccount: "B",
+            amount: 100,
+            category: "eating_out",
+            time: "2018-03-02T10:34:30.000Z",
+        },
+    ],
+    [
+        {
+            id: 5,
+            sourceAccount: "A",
+            targetAccount: "C",
+            amount: 250,
+            category: "other",
+            time: "2018-03-02T10:33:00.000Z",
+        },
+        {
+            id: 6,
+            sourceAccount: "A",
+            targetAccount: "C",
+            amount: 250,
+            category: "other",
+            time: "2018-03-02T10:33:05.000Z",
+        },
+    ],
+];
+
 const transactions = [
     {
         id: 3,
@@ -80,29 +134,30 @@ const groupingBySimilarTime = (acc, element) => {
     if (acc.length == 0) {
         acc.push([element])
 
-    //buscar como mejorar esta parte del codigo para hacerla mas entendible    
+        //buscar como mejorar esta parte del codigo para hacerla mas entendible    
     } else if (new Date(time) - new Date(acc[acc.length - 1][acc[acc.length - 1].length - 1].time) <= TIME_DIFF) {
-      
+
         acc[acc.length - 1].push(element);
 
     } else {
         acc.push([element]);
     }
 
-       
-    // console.log(acc);
-
 
 
     return acc;
 }
 
-//aca aplico reduce a cada grupo para que se compruebe si cumplen con el requisito de tiempo para considerarse duplicadas
-
+/*aca se aplica reduce a cada grupo para que se compruebe si cumplen con el requisito
+de tiempo para considerarse duplicadas, las transacciones que pasen la comprobacion 
+las acumula en un array por cada token
+*/
 const mappingByGroup = (group) => {
-    
+
     return group.reduce(groupingBySimilarTime, []);
 }
+
+
 
 //se ordenan las transacciones por fecha de mas antigua a mas reciente
 const arraySortedByDate = transactions.sort(sortedByDate);
@@ -114,12 +169,15 @@ const groupWithToken = arraySortedByDate.reduce(goupedByToken, {});
 
 const groupedByTokenInArray = Object.values(groupWithToken)
 
-//se le aplica la funcionalidad para comparar si el tiempo entre trasaccion es menor a 1 minuto y de esta manera agruparlas en transacciones duplicadas
+/*se le aplica la funcionalidad a cada array de transacciones de cada token
+ para comparar si el tiempo entre trasaccion  es menor a 1 minuto y de esta manera 
+ agruparlas en transacciones duplicadas
+*/
+const groupWithTokenMapped = groupedByTokenInArray.map(mappingByGroup).flat();
 
-const groupWithTokenMapped = groupedByTokenInArray.map(mappingByGroup);
+
+/*Se muestra el resultado y se filtra mostrando solo las transacciones duplicadas*/
+
+console.info(groupWithTokenMapped.filter(item => item.length > 1));
 
 
-console.info(groupWithTokenMapped.flat());
-
-
-//FALTA ELIMINAR LOS GRUPOS CON LAS TRANSACCIONES QUE NO RESULTARON SER DUPLICADAS
