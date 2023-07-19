@@ -69,7 +69,6 @@ const transactions = [
 // Datos de ejemplo de la prueba
 
 
-const categorytest = "salary";
 
 const filterCategory = (categorytest) => {
   return (element) => {
@@ -83,8 +82,6 @@ const filterDate = (starDate, endDate) => {
   const startRangeDateInMs = new Date(starDate).getTime();
   const endRangeDateInMs = new Date(endDate).getTime() + ONE_DAY_IN_MS;
 
-
-
   return (element) => {
     const transactionDateInMs = new Date(element.time).getTime();
 
@@ -97,16 +94,15 @@ const amountsSum = (totalSum, elementAmount) => {
   return totalSum
 }
 
+function sumAmountByCategoryAndDateRange(transactions, category, starDate, endDate) {
+  return transactions
+    .filter(filterCategory(category))
+    .filter(filterDate(starDate, endDate))
+    .reduce(amountsSum, 0);
+}
 
-const transactionsFilteredByCategory = transactions.filter(filterCategory(categorytest));
-
-const transactionsFilteredByDateRange = transactionsFilteredByCategory.filter(filterDate("2019-01-01", "2023-02-12"));
-
-const transactionsSumAmount = transactionsFilteredByDateRange.reduce(amountsSum, 0)
-
-
-
-console.log(transactionsSumAmount);
+console.log(sumAmountByCategoryAndDateRange(transactions, "eating_out", "2017-01-01", "2023-02-12"));
 
 
-//TODO: Refactorizar para que todo quede dentro de una sola funcion 
+
+ 
