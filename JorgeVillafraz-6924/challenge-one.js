@@ -92,9 +92,21 @@ const filterDate = (starDate, endDate) => {
   }
 }
 
+const amountsSum = (totalSum, elementAmount) => {
+  totalSum += elementAmount.amount
+  return totalSum
+}
+
 
 const transactionsFilteredByCategory = transactions.filter(filterCategory(categorytest));
 
-const transactionsFilteredByDateRange = transactionsFilteredByCategory.filter(filterDate("2019-01-01", "2019-02-12"));
+const transactionsFilteredByDateRange = transactionsFilteredByCategory.filter(filterDate("2019-01-01", "2023-02-12"));
 
-console.log(transactionsFilteredByDateRange);
+const transactionsSumAmount = transactionsFilteredByDateRange.reduce(amountsSum, 0)
+
+
+
+console.log(transactionsSumAmount);
+
+
+//TODO: Refactorizar para que todo quede dentro de una sola funcion 
